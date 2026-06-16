@@ -1,0 +1,7 @@
+Days,Date,Day,Travel,Sites Visited,Property Visited,NOTES,Estimated Driving Time (HHmm),Estimated Survey Time (HHmm),Estimated Post Survey Tasks Time (HHmm),Redundancy Timing (HHmm),Total Estimated Working Time,Accomodation,ACCOM LINK,
+1,23/06/2026,Tuesday,WAITE CAMPUS to IVANHOE NSW,NULL,NULL,,7.08,0,0,1,8:08,IVANHOE NSW,https://example.com,Booked
+2,24/06/2026,Wednesday,IVANHOE NSW to MOUNT HOPE NSW,NSAMDD0024,Kajuligah Nature Reserve,,3.24,3.45,0.45,0.45,8:39,MOUNT HOPE,https://example.com/hotel,Booked
+,,,,,,,,,,,,,,
+SITE ORDER,SITE,PROPERTY (SWARM),CURRENT PROPERTY IF CHANGED (CURRENT),LAND CLASSIFICATION,LOT NUMBER,,LAT,LONG,TRIP,DATE RANGE,,,,
+1,NSAMDD0024,Kajuligah Nature Reserve,Kajuligah,National Park,,,-32.68,144.62,TRIP 1,June,,,,
+,NSABBS0001,Warrumbungle National Park,Warrumbungle,National Park,,,-31.28,148.97,TRIP 1,June,,,,

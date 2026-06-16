@@ -1,0 +1,29 @@
+# Local database (never commit)
+data/*.db
+data/*.db-shm
+data/*.db-wal
+*.db
+*.db-shm
+*.db-wal
+
+# Generated planning artefacts
+docs/drafts/*.md
+!docs/drafts/.gitkeep
+docs/audits/*.md
+!docs/audits/.gitkeep
+docs/checklists/*.md
+docs/checklists/*.docx
+docs/checklists/maps/
+!docs/checklists/.gitkeep
+
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
+
+# Tool caches
+.pytest_cache/
+.ruff_cache/
+
+# Obsidian (optional — keep plugin config if you prefer)
+# .obsidian/

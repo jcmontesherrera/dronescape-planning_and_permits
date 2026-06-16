@@ -1,0 +1,76 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dronescape_planning"
+version = "0.1.0"
+description = "Permit kanban boards, trip logistics, and planning scripts for the DroneScape field campaign."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [
+    { name = "Juan Carlos Montes Herrera", email = "juancarlos.montesherrera@utas.edu.au" },
+]
+license = { text = "MIT" }
+keywords = ["drone", "tern", "ausplots", "field-trip", "permits", "logistics", "sqlite"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: GIS",
+]
+
+# Core package has no third-party deps — existing shortlist / trip_audit / seed_campaigns
+# scripts are stdlib-only. Heavier dependencies are opt-in via extras.
+dependencies = []
+
+[project.optional-dependencies]
+maps = [
+    "geopandas>=0.14",
+    "matplotlib>=3.8",
+    "contextily>=1.6",
+    "folium>=0.17",
+    "shapely>=2.0",
+]
+docx = [
+    "python-docx>=1.1",
+]
+all = [
+    "dronescape_planning[maps]",
+    "dronescape_planning[docx]",
+]
+dev = [
+    "pytest>=8",
+    "pytest-cov>=5",
+    "ruff>=0.4",
+    "mypy>=1.10",
+]
+
+[project.scripts]
+ds-checklist = "dronescape_planning.generate_checklist:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+
+[tool.ruff.lint.per-file-ignores]
+"src/dronescape_planning/generate_checklist.py" = ["B008"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.mypy]
+python_version = "3.12"
+ignore_missing_imports = true
+warn_unused_ignores = true

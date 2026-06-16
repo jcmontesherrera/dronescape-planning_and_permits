@@ -1,0 +1,11 @@
+property,uncollected_plots,plot_ids,centroid_lat,centroid_lon,bioregions,mvgs,tenure,jurisdiction,access_status,email_address,notes
+Kakadu National Park,17,"NTAARP0001, NTAARP0002, NTAARP0003, NTAARP0004, NTAARP0005, NTADAC0002, NTAPCK0001, NTAPCK0002, NTAPCK0003, NTAPCK0004, NTAPCK0005, NTAPCK0006, NTAPCK0007, NTAPCK1007, NTAPCK1009, NTAPCK1010, NTAPCK1011",-12.8273,132.7585,"Arnhem Plateau,Darwin Coastal,Pine Creek","Eucalypt Open Forests,Eucalypt Woodlands,Tropical Eucalypt Woodlands/Grasslands",,,,,
+Wongalara Private Reserve,8,"NTAGFU0030, NTAGFU0031, NTAGFU0032, NTAGFU0033, NTAGFU0034, NTAGFU0035, NTAGFU0042, NTAGFU0043",-14.1331,134.3557,Gulf Fall and Uplands,"Tropical Eucalypt Woodlands/Grasslands,Acacia Forests and Woodlands,Eucalypt Woodlands",,,,,
+Litchfield National Park,6,"NTADAC0001, NTADAC0004, NTADAC0005, NTADAC0006, NTADAC0007, NTTDAC0001",-13.1712,130.7917,Darwin Coastal,"Eucalypt Open Forests,Eucalypt Woodlands",,,,,
+Moroak Station,5,"NTAGFU0036, NTAGFU0037, NTAGFU0038, NTAGFU0039, NTAGFU0040",-14.6777,133.8752,Gulf Fall and Uplands,"Acacia Forests and Woodlands,Eucalypt Woodlands",,,,,
+Ranger Mine Lease area,5,"NTAPCK1012, NTAPCK2002, NTAPCK2003, NTAPCK2013, NTAPCK2014",-12.6647,132.9316,Pine Creek,"Eucalypt Open Forests,Tropical Eucalypt Woodlands/Grasslands",,,,,
+Maryfield Station,3,"NTASTU0001, NTASTU0002, NTASTU0003",-15.7838,133.3726,Sturt Plateau,"Tropical Eucalypt Woodlands/Grasslands,Cleared, non-native vegetation, buildings,Eucalypt Woodlands",,,,,
+Mataranka Station,3,"NTAGFU0041, NTASTU0004, NTASTU0005",-14.8508,132.9769,"Gulf Fall and Uplands,Sturt Plateau","Cleared, non-native vegetation, buildings,Tropical Eucalypt Woodlands/Grasslands",,,,,
+Koolpinyah Station (NT Portion 4476),1,NTADAC0003,-12.4918,131.1494,Darwin Coastal,Eucalypt Woodlands,,,,,
+Manton Dam Conservation Reserve,1,NTTPCK0001,-12.872,131.127,Pine Creek,Eucalypt Woodlands,,,,,
+Umbrawarra Conservation Park,1,NTTDAB0001,-13.9629,131.674,Daly Basin,Eucalypt Open Forests,,,,,

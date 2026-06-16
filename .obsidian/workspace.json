@@ -1,0 +1,236 @@
+{
+  "main": {
+    "id": "e4ab8ae3197b57bc",
+    "type": "split",
+    "children": [
+      {
+        "id": "68331bcbdbe80ca7",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "813ea6de2a572f00",
+            "type": "leaf",
+            "state": {
+              "type": "kanban",
+              "state": {
+                "file": "boards/01-ADL-BRI-Access-applications.md",
+                "kanbanViewState": {
+                  "kanban-plugin": "board",
+                  "list-collapse": []
+                }
+              },
+              "icon": "lucide-trello",
+              "title": "01-ADL-BRI-Access-applications"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "4631e1b30c9c1597",
+    "type": "split",
+    "children": [
+      {
+        "id": "f6e029213fd418ba",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "7ef56131ef1a291a",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "6ac3ffb7132ff951",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "a14f2073f16fd8e3",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 542.5
+  },
+  "right": {
+    "id": "2a5caa113dd169b8",
+    "type": "split",
+    "children": [
+      {
+        "id": "d760229c2b33b182",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "e5ef0dd669019295",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "docs/audits/01-ADL-BRI-Access-applications-audit.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for 01-ADL-BRI-Access-applications-audit"
+            }
+          },
+          {
+            "id": "b4e36103653901c3",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "aa7143170b4180c9",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "6b770a74e3b8618a",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "ce2a728da430c1b9",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false,
+      "obsidian-kanban:Create new board": false
+    }
+  },
+  "active": "813ea6de2a572f00",
+  "lastOpenFiles": [
+    "boards/02-BRI-BRK-Access-applications.md",
+    "data/README.md",
+    "Untitled 1.md",
+    "breeza-station-sites.png",
+    "Pasted image 20260612162201.png",
+    "Untitled.md",
+    "crown-lands-sites.png",
+    "Pasted image 20260612161527.png",
+    "docs/checklists/maps/02-BRI-BRK-2026-07-Crown_Lands_Western_Region.png",
+    "docs/checklists/maps/02-BRI-BRK-2026-07-NSW_Crown_Lands_-_Western_Region.png",
+    "docs/checklists/maps/02-BRI-BRK-2026-07-Road_Reserve.png",
+    "data/campaigns.db-shm",
+    "data/campaigns.db-wal",
+    "Torrington-Sites.png",
+    "hhh.png",
+    "Pasted image 20260612154420.png",
+    "docs/outreach-workflow.md",
+    "docs/checklists/02-BRI-BRK-2026-07-checklist.md",
+    "docs/audits/02-BRI-BRK-2026-07-itinerary-feedback.md",
+    "docs/audits/02-BRI-BRK-2026-07-itinerary-import.md",
+    "docs/audits/02-BRI-BRK-Access-applications-audit.md",
+    "boards/01-ADL-BRI-Access-applications.md",
+    "02-BRI-BRK-2026-07 · Brisbane → Broken Hill.md",
+    "docs/planning-notes/02-BRI-BRK-itinerary-decision.md",
+    "docs/planning-notes",
+    "docs/itineraries/02-BRI-BRK-2026-07-itinerary.csv",
+    "docs/itineraries/maps/01-ADL-BRI-2026-06-plots.kmz",
+    "docs/itineraries/maps/01-ADL-BRI-2026-06-plots.kml",
+    "docs/itineraries/maps/02-BRI-BRK-2026-07-plots-v1.kmz",
+    "docs/itineraries/maps/02-BRI-BRK-2026-07-plots-v1.kml",
+    "docs/itineraries/maps/02-BRI-BRK-2026-07-plots.kml",
+    "docs/itineraries/maps/02-BRI-BRK-2026-07-plots.kmz",
+    "decisions/0006-late-permit-itinerary-flex.md",
+    "docs/field-day-policy.md",
+    "docs/audits/01-ADL-BRI-2026-06-itinerary-feedback.md",
+    "docs/audits/01-ADL-BRI-2026-06-itinerary-import.md",
+    "decisions/0005-itinerary-csv-as-logistics-snapshot.md",
+    "docs/itineraries/README.md",
+    "docs/checklists/01-ADL-BRI-2026-06-checklist.md",
+    "boards/00-TRIP-TEMPLATE-Access-applications.md",
+    "docs/audits/01-ADL-BRI-Access-applications-audit.md",
+    "boards/05-DRW-TOP-Access-applications.md",
+    "docs/planning-guide.md",
+    "docs/audits/05-DRW-TOP-Access-applications-audit.md",
+    "docs/drafts/05-DRW-TOP-2027-06-draft.md",
+    "docs/campaign-roadmap.md"
+  ]
+}

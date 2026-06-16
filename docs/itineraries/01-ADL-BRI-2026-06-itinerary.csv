@@ -1,0 +1,42 @@
+Days,Date,Day,Travel,Sites Visited,Property Visited,NOTES,Estimated Driving Time (HHmm),Estimated Survey Time (HHmm),Estimated Post Survey Tasks Time (HHmm),Redundancy Timing (HHmm),Total Estimated Working Time,Accomodation,ACCOM LINK,
+1,23/06/2026,Tuesday,WAITE CAMPUS to IVANHOE NSW,NULL,NULL,,7.08,0,0,1,8:08,IVANHOE NSW,Booking.com: Hotels in Ivanhoe. Book your hotel now!,Booked
+2,24/06/2026,Wednesday,IVANHOE NSW to MOUNT HOPE NSW,NSAMDD0024 NSAMDD0023 NSAMDD0032,Kajuligah Nature Reserve Yathong Nature Reserve,,3.24,3.45,0.45,0.45,8:39,MOUNT HOPE,"Royal Hotel, Mount Hope NSW - Google Maps",Booked
+3,25/06/2026,Thursday,MOUNT HOPE NSW to HILLSTON NSW,NSAMDD0031 NSACOP0001 NSACOP0002,Yathong Nature Reserve,,3.02,3.45,0.45,0.45,8:17,HILSTON,Hillston Motel & Shamrock Restaurant,Booked
+4,26/06/2026,Friday,HILLSTON NSW to HILLSTON NSW,NSAMDD0019 NSAMDD0021 NSAMDD0020 NSAMDD0022 ,Nombinnie Nature Reserve            ,,1.58,5,1,1,8:58,HILLSTON,Hillston Motel & Shamrock Restaurant,Booked
+,27/06/2026,Saturday,HILLSTON NSW to CONOBOLIN NSW,NSAMDD0017 NSAMDD0018 ,Langtree Nature Reserve Loughnan Nature Reserve ,,2.46,3.3,0.3,0.3,7:16,CONOBOLIN,"Railway Hotel Condobolin | Accommodation, Dining & Bar",Booked + 'paid'
+5,28/06/2026,Sunday,CONOBOLIN NSW to GILGANDRA NSW,NSANSS0001 NSANSS0002,Goobang National Park,,3.59,2.3,0.3,0.3,7:29,GILGANDRA NSW,https://www.gilgandramotel.com.au/,Booked
+6,29/06/2026,Monday,GILGANDRA NSW to NARRABI NSW,NSABBS0004 NSABBS0005 NSABBS0006,Pilliga State Conservation Area,,3.39,3.45,0.45,0.45,8:54,NARRABI,Adelong Motel https://www.booking.com/Share-AUTMBM,Booked
+7,30/06/2026,Tuesday,NARRABI NSW to TEXAS NSW,NSABBS0003 NSABBS0012 ,Pilliga State Conservation Area                                                 Glen Orten Station    ,,5.34,3.3,0.3,0.3,10:04,TEXAS,Texas Motel - Clean and comfortable accommodation in Texas Qld. Licensed onsite Restaurant.,Booked
+8,1/07/2026,Wednesday,TEXAS NSW to BRISBANE QLD,NULL,NULL,PICK UP TRAILER BOOKED FOR 1PM. DROP OFF CAR AT UQ ,3.57,,,5,8:57,BRISBANE ,"Imperial Motel Windsor, Brisbane (updated prices 2026)",Booked
+9,2/07/2026,Thursday,BRISBANE QLD to ADELAIDE SA,NULL,NULL,Travel Day,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+SITE ORDER,SITE,PROPERTY (SWARM),CURRENT PROPERTY IF CHANGED (CURRENT),LAND CLASSIFICATION,LOT NUMBER,,LAT,LONG,TRIP,DATE RANGE,,,,
+1,NSAMDD0024,Kajuligah Nature Reserve,Kajuligah,National Park,4552//DP767652,,-32.682208,144.627461,TRIP 1,23rd June - 3rd July,,,,
+2,NSAMDD0023,Kajuligah Nature Reserve,Kajuligah,National Park,4552//DP767652,,-32.690092,144.649778,TRIP 1,23rd June - 3rd July,,,,
+3,NSAMDD0032,Yathong Nature Reserve,Yathong,National Park,4573//DP767707,,-32.743247,145.420908,TRIP 1,23rd June - 3rd July,,,,
+4,NSAMDD0031,Yathong Nature Reserve,Yathong,National Park,4573//DP767707,,-32.586269,145.492225,TRIP 1,23rd June - 3rd July,,,,
+5,NSACOP0001,Yathong Nature Reserve,Yathong,National Park,,,-32.591061,145.540681,TRIP 1,23rd June - 3rd July,,,,
+6,NSACOP0002,Yathong Nature Reserve,Yathong,National Park,,,-32.604519,145.665289,TRIP 1,23rd June - 3rd July,,,,
+7,NSAMDD0019,Nombinnie Nature Reserve,Nombinnie,National Park,4813//DP769201,,-33.192147,145.699369,TRIP 1,23rd June - 3rd July,,,,
+8,NSAMDD0021,Nombinnie Nature Reserve,Nombinnie,National Park,4813//DP769201,,-33.200836,145.717186,TRIP 1,23rd June - 3rd July,,,,
+9,NSAMDD0020,Nombinnie Nature Reserve,Nombinnie,National Park,4813//DP769201,,-33.206803,145.708558,TRIP 1,23rd June - 3rd July,,,,
+10,NSAMDD0022,Nombinnie Nature Reserve,Nombinnie,National Park,4813//DP769201,,-33.225222,145.760172,TRIP 1,23rd June - 3rd July,,,,
+11,NSAMDD0017,Langtree Nature Reserve,Langtree,National Park,42//DP820178,,-33.668764,145.566383,TRIP 1,23rd June - 3rd July,,,,
+12,NSAMDD0018,Loughnan Nature Reserve,Loughnan,National Park,14//DP755175,,-33.567233,145.784008,TRIP 1,23rd June - 3rd July,,,,
+13,NSANSS0001,Goobang National Park,Goobang,National Park,,,-32.749856,148.347694,TRIP 1,23rd June - 3rd July,,,,
+14,NSANSS0002,Goobang National Park,Goobang,National Park,,,-32.83523,148.32398,TRIP 1,23rd June - 3rd July,,,,
+,NSABBS0001,Warrumbungle National Park,Warrumbungle,National Park,,,-31.281189,148.976552,TRIP 1,23rd June - 3rd July,,,,
+,NSABBS0002,Warrumbungle National Park,Warrumbungle,National Park,5//DP753376,,-31.279453,148.992461,TRIP 1,23rd June - 3rd July,,,,
+15,NSABBS0003,Pilliga State Conservation Area,Pilliga,National Park,,,-30.454647,149.226828,TRIP 1,23rd June - 3rd July,,,,
+16,NSABBS0004,Pilliga State Conservation Area,Pilliga,National Park,,,-30.460964,149.246894,TRIP 1,23rd June - 3rd July,,,,
+17,NSABBS0005,Pilliga State Conservation Area,Pilliga,National Park,,,-30.498783,149.279986,TRIP 1,23rd June - 3rd July,,,,
+18,NSABBS0006,Pilliga State Conservation Area,Pilliga,National Park,,,-30.510272,149.267289,TRIP 1,23rd June - 3rd July,,,,
+19,NSABBS0012,Glen Orten Station,Glen Orten Station (02) 6729 9059,Private,2//DP1110601,,-29.241692,150.742342,TRIP 1,23rd June - 3rd July,,,,
+,QDABBS0010,Irongate Conservation Park,Irongate Conservation Park,National Park,105AG3488,,-27.657957,151.522344,BACKUP TRIP 1,23rd June - 3rd July,,,,
+,QDABBS0009,Myall Park Private Reserve,Myall Park Nature Refuge,Freehold,43A342501,,-27.385653,151.6128,BACKUP TRIP 1,23rd June - 3rd July,,,,
+,QDABBS0008,Saint Ruth Reserve,No details,Reserve,288A341480,,-27.330871,151.249344,BACKUP TRIP 1,23rd June - 3rd July,,,,
+,QDABBS0007,Saint Ruth Reserve,No details,Reserve,288A341480,,-27.329181,151.24217,BACKUP TRIP 1,23rd June - 3rd July,,,,
+,QDABBS0006,Abattoir Reserve,No details,Reserve,235AG3562,,-27.15261,151.233411,BACKUP TRIP 1,23rd June - 3rd July,,,,
+,QDASEQ0002,Russell Reserve,Brindavan / Russell Reserve (?),Freehold,5RP46591,,-26.902622,151.632719,BACKUP TRIP 1,23rd June - 3rd July,,,,
