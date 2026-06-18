@@ -27,18 +27,16 @@ Usage
 from __future__ import annotations
 
 import argparse
-import math
 import re
 import shutil
 import sqlite3
 import sys
-from copy import deepcopy
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
 
+from dronescape_planning.db import open_planning_db
 from dronescape_planning.paths import (
-    ARD_STATE,
     CAMPAIGNS,
     DOCS_CHECKLISTS,
     TEMPLATE_DOCX,
@@ -207,20 +205,8 @@ def _state_from_plot(plot_id: str) -> str:
     return _STATE_PREFIXES.get(prefix, prefix)
 
 
-# ---------------------------------------------------------------------------
-# Database query
-# ---------------------------------------------------------------------------
-
-
-def _haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
-    r = 6371.0
-    dlat = math.radians(lat2 - lat1)
-    dlon = math.radians(lon2 - lon1)
-    a = (
-        math.sin(dlat / 2) ** 2
-        + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlon / 2) ** 2
-    )
-    return r * 2 * math.asin(math.sqrt(min(1.0, a)))
+def _plain_md(text: str) -> str:
+    return text.replace("✅", "[x]").replace("⬜", "[ ]").replace("**", "")
 
 
 def query_trip_data(trip_id: str) -> TripData:
@@ -230,13 +216,8 @@ def query_trip_data(trip_id: str) -> TripData:
     if not TERN_PLOTS.exists():
         sys.exit(f"ERROR: tern_plots.db not found at {TERN_PLOTS}.")
 
-    con = sqlite3.connect(CAMPAIGNS)
-    con.row_factory = sqlite3.Row
-    con.execute(f"ATTACH DATABASE '{TERN_PLOTS.as_posix()}' AS tp")
-    if ARD_STATE.exists():
-        con.execute(f"ATTACH DATABASE '{ARD_STATE.as_posix()}' AS ard")
+    con = open_planning_db(attach_ard=True, row_factory=sqlite3.Row)
 
-    # Campaign metadata
     row = con.execute(
         """
         SELECT trip_id, route_origin, route_dest, start_date, end_date,
@@ -248,9 +229,11 @@ def query_trip_data(trip_id: str) -> TripData:
     ).fetchone()
 
     if row is None:
-        # Try to fall back to the draft brief + kanban board (no DB row yet)
         con.close()
-        return _trip_data_from_draft(trip_id)
+        sys.exit(
+            f"ERROR: No row for '{trip_id}' in campaigns.db.\n"
+            "Run: python scripts/trip_audit.py --trip-kanban boards/<trip>.md --register"
+        )
 
     trip = TripData(
         trip_id=row["trip_id"],
@@ -358,135 +341,6 @@ def query_trip_data(trip_id: str) -> TripData:
         trip.itinerary_days_meta = []
 
     con.close()
-    return trip
-
-
-def _trip_data_from_draft(trip_id: str) -> TripData:
-    """
-    Fall back to the draft brief markdown when no campaigns.db row exists yet.
-    Parses docs/drafts/<trip-id>-draft.md and the matching kanban board.
-    """
-    from dronescape_planning.paths import BOARDS_DIR, DOCS_DRAFTS
-
-    draft_path = DOCS_DRAFTS / f"{trip_id}-draft.md"
-    if not draft_path.exists():
-        sys.exit(
-            f"ERROR: No DB row for '{trip_id}' in campaigns.db, and no draft brief at {draft_path}.\n"
-            "Run: python scripts/shortlist.py --trip-id ... --draft to generate a draft first."
-        )
-
-    text = draft_path.read_text(encoding="utf-8")
-
-    # Parse header
-    route = ""
-    field_window = ""
-    m = re.search(r"^# Trip draft: \S+ \((.+)\)", text, re.MULTILINE)
-    if m:
-        route = m.group(1)
-    m = re.search(r"^- Field window: (.+)", text, re.MULTILINE)
-    if m:
-        field_window = m.group(1).strip()
-
-    # Dates
-    start_date, end_date = "", ""
-    m = re.search(r"(\d{4}-\d{2}-\d{2})\.\.(\d{4}-\d{2}-\d{2})", field_window)
-    if m:
-        start_date, end_date = m.group(1), m.group(2)
-
-    # Season
-    season = None
-    m = re.search(r"\((winter|summer|autumn|spring|[^)]+)\)", field_window)
-    if m:
-        season = m.group(1)
-
-    # Route origin / dest from trip_id pattern NN-ORIG-DEST-YYYY-MM
-    parts = trip_id.split("-")
-    route_origin, route_dest = "", ""
-    if len(parts) >= 3:
-        route_origin = parts[1]
-        route_dest = parts[2]
-
-    trip = TripData(
-        trip_id=trip_id,
-        route_origin=route_origin,
-        route_dest=route_dest,
-        start_date=start_date,
-        end_date=end_date,
-        season=season,
-        enso_phase=None,
-        notes=None,
-    )
-
-    # Parse property sections from the draft
-    prop_blocks = re.split(r"^### \d+\. ", text, flags=re.MULTILINE)[1:]
-    for block in prop_blocks:
-        lines = block.strip().splitlines()
-        header = lines[0]
-        m = re.match(r"^(.+?) -- (\d+) plot", header)
-        if not m:
-            continue
-        pname = m.group(1).strip()
-
-        plot_ids: list[str] = []
-        centroid_lat = centroid_lon = 0.0
-        bioregion_str = mvg_str = tenure = jurisdiction = ""
-        for line in lines[1:]:
-            if line.startswith("- Plot IDs:"):
-                ids_part = line.split(":", 1)[1].split("(")[0].strip()
-                plot_ids = [x.strip() for x in ids_part.split(",") if x.strip()]
-            elif line.startswith("- Centroid:"):
-                coords = line.split(":", 1)[1].strip().split(",")
-                if len(coords) == 2:
-                    try:
-                        centroid_lat = float(coords[0].strip())
-                        centroid_lon = float(coords[1].strip())
-                    except ValueError:
-                        pass
-            elif line.startswith("- Bioregion(s):"):
-                bioregion_str = line.split(":", 1)[1].strip()
-            elif line.startswith("- MVG(s):"):
-                mvg_str = line.split(":", 1)[1].strip()
-            elif line.startswith("- Tenure / jurisdiction:"):
-                parts_tj = line.split(":", 1)[1].strip().split("/")
-                tenure = parts_tj[0].strip()
-                jurisdiction = parts_tj[1].strip() if len(parts_tj) > 1 else ""
-
-        if not plot_ids:
-            continue
-
-        # Distribute centroid evenly across plot stubs (no real per-plot coords in draft)
-        n = len(plot_ids)
-        grp = PropertyGroup(
-            name=pname,
-            tenure=tenure or None,
-            jurisdiction=jurisdiction or None,
-            access_status=None,
-            email_address=None,
-            notes=None,
-        )
-        for i, pid in enumerate(plot_ids):
-            # Jitter slightly so markers don't stack on the map
-            jitter = 0.001 * (i - n / 2)
-            grp.plots.append(
-                PlotRow(
-                    plot=pid,
-                    latitude=centroid_lat + jitter,
-                    longitude=centroid_lon + jitter,
-                    property=pname,
-                    site_location_name="",
-                    visit_date=None,
-                    access_notes=None,
-                    collected=0,
-                    bioregion=bioregion_str.split(",")[0].strip() if bioregion_str else None,
-                    mvg=mvg_str.split(",")[0].strip() if mvg_str else None,
-                    state=_state_from_plot(pid),
-                )
-            )
-        trip.properties.append(grp)
-
-    if not trip.properties:
-        sys.exit(f"ERROR: Could not parse any properties from {draft_path}")
-
     return trip
 
 
@@ -821,9 +675,6 @@ def render_markdown(trip: TripData, maps_dir: Optional[Path] = None) -> str:
 # DOCX renderer
 # ---------------------------------------------------------------------------
 
-def _cell_text(table, row_idx: int, col_idx: int) -> str:
-    return table.rows[row_idx].cells[col_idx].text
-
 
 def _set_run_black(run) -> None:
     """Force run text to black (override Word theme/hyperlink purple)."""
@@ -1109,16 +960,13 @@ def _itinerary_as_text(trip: TripData) -> str:
             extra = f" — {meta.notes}" if meta.notes else ""
             lines.append(f"{meta.visit_date}: {location} — Plots: {plot_ids}{extra}")
         return "\n".join(lines)
-
     days = trip.itinerary_days
     if not days:
         return _TODO
-    lines = []
-    for date, plots in days:
-        props = sorted({p.property for p in plots})
-        plot_ids = ", ".join(p.plot for p in plots)
-        lines.append(f"{date}: {'; '.join(props)} — Plots: {plot_ids}")
-    return "\n".join(lines)
+    return "\n".join(
+        f"{date}: {'; '.join(sorted({p.property for p in plots}))} — Plots: {', '.join(p.plot for p in plots)}"
+        for date, plots in days
+    )
 
 
 def _flight_areas_as_text(trip: TripData) -> str:
@@ -1132,34 +980,11 @@ def _flight_areas_as_text(trip: TripData) -> str:
 
 
 def _permits_as_text(trip: TripData) -> str:
-    lines = [
-        f"Valid state scientific permit: {_TODO}",
-        f"UAV permits required: {_TODO}  application submitted: {_TODO}  granted: {_TODO}",
-        "",
-        "Landholders:",
-    ]
-    for grp in trip.properties:
-        lines.append(
-            f"  {grp.name}: {grp.tenure or _TODO} / {grp.jurisdiction or _TODO} — "
-            f"access: {grp.access_status or 'unknown'}"
-        )
-    lines.append("")
-    lines.append("Team to carry hard copies of permits and/or authorisations, as applicable.")
-    return "\n".join(lines)
+    return _plain_md(_permits_block(trip))
 
 
 def _landholder_as_text(trip: TripData) -> str:
-    lines: list[str] = []
-    for grp in trip.properties:
-        lines += [
-            f"{grp.name}",
-            f"  Tenure: {grp.tenure or _TODO}  Jurisdiction: {grp.jurisdiction or _TODO}",
-            f"  Access status: {grp.access_status or 'unknown'}",
-            f"  Contact: {grp.email_address or _TODO}",
-            f"  Access request: Initiated {_TODO}  Granted: {_TODO}",
-            "",
-        ]
-    return "\n".join(lines).strip()
+    return _plain_md(_landholder_block(trip))
 
 
 # ---------------------------------------------------------------------------
@@ -1167,12 +992,7 @@ def _landholder_as_text(trip: TripData) -> str:
 # ---------------------------------------------------------------------------
 
 def generate_maps(trip: TripData, maps_dir: Path) -> list[Path]:
-    """
-    Produce static PNG maps using geopandas + contextily.
-    Falls back to a folium HTML map if contextily tile fetch fails.
-
-    Returns a list of paths to generated files.
-    """
+    """Produce static PNG maps using geopandas + contextily."""
     try:
         import contextily as ctx
         import geopandas as gpd
@@ -1260,55 +1080,6 @@ def generate_maps(trip: TripData, maps_dir: Path) -> list[Path]:
 
 
 # ---------------------------------------------------------------------------
-# Folium interactive map (bonus — for Obsidian HTML embed)
-# ---------------------------------------------------------------------------
-
-def generate_folium_map(trip: TripData, maps_dir: Path) -> Optional[Path]:
-    """Generate an interactive folium HTML map alongside the static PNGs."""
-    try:
-        import folium
-        from folium.plugins import MarkerCluster
-    except ImportError:
-        return None
-
-    plots = trip.all_plots
-    if not plots:
-        return None
-
-    centre_lat = sum(p.latitude for p in plots) / len(plots)
-    centre_lon = sum(p.longitude for p in plots) / len(plots)
-
-    m = folium.Map(location=[centre_lat, centre_lon], zoom_start=7, tiles="OpenStreetMap")
-    cluster = MarkerCluster().add_to(m)
-
-    colors = ["red", "blue", "green", "purple", "orange", "darkred", "darkblue", "darkgreen"]
-    color_map: dict[str, str] = {}
-    for i, grp in enumerate(trip.properties):
-        color_map[grp.name] = colors[i % len(colors)]
-
-    for p in plots:
-        color = color_map.get(p.property, "gray")
-        popup_html = (
-            f"<b>{p.plot}</b><br>"
-            f"Property: {p.property}<br>"
-            f"Lat: {p.latitude:.5f}, Lon: {p.longitude:.5f}<br>"
-            f"Bioregion: {p.bioregion or '—'}<br>"
-            f"MVG: {p.mvg or '—'}<br>"
-            f"Collected: {'Yes' if p.collected else 'No'}"
-        )
-        folium.Marker(
-            location=[p.latitude, p.longitude],
-            popup=folium.Popup(popup_html, max_width=280),
-            tooltip=p.plot,
-            icon=folium.Icon(color=color, icon="circle", prefix="fa"),
-        ).add_to(cluster)
-
-    out_path = maps_dir / f"{trip.trip_id}-interactive.html"
-    m.save(str(out_path))
-    return out_path
-
-
-# ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
 
@@ -1326,8 +1097,6 @@ def parse_args() -> argparse.Namespace:
                    help=f"Path to the DOCX template (default: {TEMPLATE_DOCX}).")
     p.add_argument("--maps", action="store_true",
                    help="Generate static PNG site maps via geopandas + contextily.")
-    p.add_argument("--folium", action="store_true",
-                   help="Also generate an interactive folium HTML map.")
     p.add_argument("--out-dir", type=Path, default=None, metavar="DIR",
                    help=f"Output directory (default: {DOCS_CHECKLISTS}).")
     return p.parse_args()
@@ -1351,18 +1120,12 @@ def main() -> None:
     )
 
     # Maps first (so they can be embedded in markdown)
-    if args.maps or args.folium:
+    if args.maps:
         maps_dir.mkdir(parents=True, exist_ok=True)
 
     if args.maps:
         print("Generating site maps...")
         generate_maps(trip, maps_dir)
-
-    if args.folium:
-        print("Generating interactive folium map...")
-        html_path = generate_folium_map(trip, maps_dir)
-        if html_path:
-            print(f"  Saved: {html_path.name}")
 
     # Markdown
     md_path = out_dir / f"{trip_id}-checklist.md"

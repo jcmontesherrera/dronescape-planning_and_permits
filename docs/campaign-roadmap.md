@@ -18,7 +18,7 @@ Routing rules: each trip starts where the previous one's vehicle was parked (unl
 - Season: winter 2026 | ENSO: El Niño
 - Vehicle endpoint: Brisbane area, early July 2026
 - Kanban: [01-ADL-BRI-Access-applications.md](../boards/01-ADL-BRI-Access-applications.md)
-- Properties: ~14 (NSW NPWS Central West, Riverina, Barwon groups; Pilliga SCA; Broken Hill Council; Crown Lands Western Region)
+- **21 active plots** across 10 properties; **NSABBS0001/0002 (Warrumbungle)** deferred → `02-BRI-BRK-2026-07`
 
 ### `02-BRI-BRK-2026-07` — drafted
 

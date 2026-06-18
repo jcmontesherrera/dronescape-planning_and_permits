@@ -25,31 +25,9 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 
+from dronescape_planning.db import open_planning_db
 from dronescape_planning.paths import CAMPAIGNS, DOCS_AUDITS, DOCS_ITINERARIES, TERN_PLOTS
-
-ITINERARY_DAYS_SCHEMA = """
-CREATE TABLE IF NOT EXISTS itinerary_days (
-    trip_id            TEXT NOT NULL,
-    visit_date         TEXT NOT NULL,
-    day_number         INTEGER,
-    day_name           TEXT,
-    travel             TEXT,
-    sites_visited      TEXT,
-    property_visited   TEXT,
-    notes              TEXT,
-    drive_time         TEXT,
-    survey_time        TEXT,
-    post_survey_time   TEXT,
-    redundancy_time    TEXT,
-    total_time         TEXT,
-    accommodation      TEXT,
-    accom_link         TEXT,
-    booking_status     TEXT,
-    source_csv         TEXT,
-    imported_at        TEXT,
-    PRIMARY KEY (trip_id, visit_date)
-);
-"""
+from dronescape_planning.seed_campaigns import ITINERARY_DAYS_SCHEMA
 
 SITE_ORDER_MARKER = "SITE ORDER"
 NULL_VALUES = {"", "NULL", "null", "None"}
@@ -281,8 +259,7 @@ def apply_import(
     if result.errors:
         return
 
-    con = sqlite3.connect(CAMPAIGNS)
-    con.execute(f"ATTACH DATABASE '{TERN_PLOTS.as_posix()}' AS tp")
+    con = open_planning_db(attach_ard=False)
     ensure_itinerary_schema(con)
     imported_at = datetime.now().isoformat(timespec="seconds")
 
@@ -343,6 +320,7 @@ def apply_import(
 
 
 def write_report(result: ImportResult, csv_path: Path, dry_run: bool) -> Path:
+    """Technical reconcile report (errors, warnings, visit_date changes only)."""
     DOCS_AUDITS.mkdir(parents=True, exist_ok=True)
     out = DOCS_AUDITS / f"{result.trip_id}-itinerary-import.md"
     lines = [
@@ -350,38 +328,24 @@ def write_report(result: ImportResult, csv_path: Path, dry_run: bool) -> Path:
         "",
         f"- Source: `{csv_path}`",
         f"- Mode: {'dry-run (no DB writes)' if dry_run else 'applied'}",
-        f"- Daily rows: {len(result.daily_rows)}",
-        f"- Site master rows: {len(result.site_rows)}",
         f"- Scheduled plots: {len(result.scheduled_plots)}",
         f"- Visit date updates: {len(result.visit_date_updates)}",
+        "",
+        "See also: "
+        f"`docs/audits/{result.trip_id}-itinerary-feedback.md` for the team copy-paste summary.",
         "",
     ]
 
     if result.errors:
-        lines += ["## Errors", ""]
-        lines += [f"- {e}" for e in result.errors]
-        lines.append("")
+        lines += ["## Errors", ""] + [f"- {e}" for e in result.errors] + [""]
 
     if result.warnings:
-        lines += ["## Warnings", ""]
-        lines += [f"- {w}" for w in result.warnings]
-        lines.append("")
+        lines += ["## Warnings", ""] + [f"- {w}" for w in result.warnings] + [""]
 
     if result.visit_date_updates:
         lines += ["## Visit date changes", "", "| Plot | Old | New |", "|------|-----|-----|"]
         for plot, old, new in sorted(result.visit_date_updates):
             lines.append(f"| {plot} | {old or '—'} | {new} |")
-        lines.append("")
-
-    if result.daily_rows:
-        lines += ["## Daily schedule (parsed)", ""]
-        for day in result.daily_rows:
-            plots = ", ".join(day.plots) if day.plots else "—"
-            lines.append(
-                f"- **{day.visit_date}** ({day.day_name}): {day.travel or '—'} · "
-                f"plots: {plots} · accom: {day.accommodation or '—'} "
-                f"({day.booking_status or '—'})"
-            )
         lines.append("")
 
     out.write_text("\n".join(lines), encoding="utf-8")
@@ -405,8 +369,7 @@ def import_itinerary(
 
     daily_rows, site_rows = parse_itinerary_csv(csv_path)
 
-    con = sqlite3.connect(CAMPAIGNS)
-    con.execute(f"ATTACH DATABASE '{TERN_PLOTS.as_posix()}' AS tp")
+    con = open_planning_db(attach_ard=False)
     resolved = resolve_trip_id(con, trip_id)
     if not resolved:
         con.close()

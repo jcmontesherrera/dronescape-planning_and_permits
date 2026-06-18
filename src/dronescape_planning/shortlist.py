@@ -38,36 +38,13 @@ Usage examples
 
 import argparse
 import csv
-import math
 import sqlite3
 import sys
 from pathlib import Path
 
-from dronescape_planning.paths import ARD_STATE, CAMPAIGNS, DOCS_DRAFTS, REPO_ROOT, TERN_PLOTS
-
-
-# ---------------------------------------------------------------------------
-# Haversine UDF (HANDOFF §5)
-# ---------------------------------------------------------------------------
-
-def _haversine_km(lat1, lon1, lat2, lon2):
-    if None in (lat1, lon1, lat2, lon2):
-        return None
-    r = 6371.0
-    dlat = math.radians(lat2 - lat1)
-    dlon = math.radians(lon2 - lon1)
-    a = (
-        math.sin(dlat / 2) ** 2
-        + math.cos(math.radians(lat1))
-        * math.cos(math.radians(lat2))
-        * math.sin(dlon / 2) ** 2
-    )
-    return r * 2 * math.asin(math.sqrt(min(1.0, a)))
-
-
-# ---------------------------------------------------------------------------
-# Query builder
-# ---------------------------------------------------------------------------
+from dronescape_planning.db import open_planning_db
+from dronescape_planning.geo import haversine_km
+from dronescape_planning.paths import ARD_STATE, CAMPAIGNS, DOCS_DRAFTS, TERN_PLOTS
 
 def build_query(args, ard_attached: bool) -> tuple[str, list]:
     """Return (sql, params) for the highest-value properties query."""
@@ -362,21 +339,17 @@ def main():
         print(f"ERROR: tern_plots.db not found at {TERN_PLOTS}.", file=sys.stderr)
         sys.exit(1)
 
-    con = sqlite3.connect(CAMPAIGNS)
-    con.execute(f"ATTACH DATABASE '{TERN_PLOTS.as_posix()}' AS tp")
-
-    ard_attached = False
-    if ARD_STATE.exists():
-        con.execute(f"ATTACH DATABASE '{ARD_STATE.as_posix()}' AS ard")
-        ard_attached = True
-    else:
+    if not ARD_STATE.exists():
         print(
             f"WARNING: ard_state.db not found at {ARD_STATE} — treating all plots as uncollected.",
             file=sys.stderr,
         )
 
+    con = open_planning_db(attach_ard=True)
+    ard_attached = ARD_STATE.exists()
+
     if args.seed_lat is not None:
-        con.create_function("haversine_km", 4, _haversine_km)
+        con.create_function("haversine_km", 4, haversine_km)
 
     sql, params = build_query(args, ard_attached)
     rows = con.execute(sql, params).fetchall()

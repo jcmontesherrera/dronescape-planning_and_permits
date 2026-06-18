@@ -184,10 +184,17 @@ VALUES ('Exact TERN Property Name', 'email@example.com', 'national park', 'NSW N
 ### 10 — Sync the logistics itinerary (shared Excel)
 
 1. Download Sheet 1 as CSV → `docs/itineraries/<trip-id>-itinerary.csv`
-2. Dry-run: `python scripts/import_itinerary.py --trip-id … --csv … --dry-run`
-3. Review `docs/audits/<trip-id>-itinerary-feedback.md`
-4. Apply: `python scripts/import_itinerary.py --trip-id … --csv …`
-5. Regenerate checklist: `python scripts/generate_checklist.py --trip-id …`
+2. **Generate KMZ for review** (optional, before import):
+   ```powershell
+   ds-generate-kml --trip-id <trip-id> --csv docs/itineraries/<trip-id>-itinerary.csv
+   # Iteration: add --label v1, v2, etc. to keep versions in docs/itineraries/maps/
+   ```
+   Open `.kmz` in Google Earth to compare routes. Layer two labelled versions to pick the best schedule.
+3. Dry-run: `python scripts/import_itinerary.py --trip-id … --csv … --dry-run`
+4. Review `docs/audits/<trip-id>-itinerary-feedback.md`
+5. Apply: `python scripts/import_itinerary.py --trip-id … --csv …`
+6. Regenerate checklist: `python scripts/generate_checklist.py --trip-id …`
+7. **Final trip KMZ** (boss preview of upcoming route): `ds-generate-kml --trip-id … --csv …` (no `--label`)
 
 **Kanban** = source of truth for access. **CSV** = source of truth for daily route,
 dates, and accommodation.
@@ -199,6 +206,7 @@ dates, and accommodation.
 ds transfer                      # (in dronescape-sync, if needed)
 ard scan                         # (in dronescape_ard)
 tplots report --db data/tern_plots.db --output-dir docs/reports   # (in tern_plots_master)
+ds-generate-kml --collected       # refresh national collected footprint KMZ for bosses
 # Then re-run shortlist for the next corridor — collected plots disappear automatically
 ```
 

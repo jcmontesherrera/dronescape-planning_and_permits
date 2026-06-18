@@ -12,18 +12,16 @@ import sqlite3
 from datetime import datetime
 from pathlib import Path
 
-from dronescape_planning.import_itinerary import DailyRow, ImportResult, resolve_trip_id
-from dronescape_planning.paths import BOARDS_DIR, CAMPAIGNS, DOCS_AUDITS, TERN_PLOTS
+from dronescape_planning.import_itinerary import DailyRow, ImportResult, parse_plot_ids, resolve_trip_id
+from dronescape_planning.paths import BOARDS_DIR, CAMPAIGNS, DOCS_AUDITS
 from dronescape_planning.trip_audit import parse_kanban
-
-_PLOT_ID = re.compile(r"[A-Z]{2}[A-Z]{4}\d{4}")
 
 
 def _plot_ids_from_card(raw_line: str) -> list[str]:
     m = re.search(r"Plot IDs:\s*([^·]+)", raw_line, re.IGNORECASE)
     if not m:
         return []
-    return _PLOT_ID.findall(m.group(1).upper())
+    return parse_plot_ids(m.group(1))
 
 
 def default_kanban_path(trip_id: str) -> Path | None:
@@ -291,11 +289,6 @@ def render_feedback(
             "| Date | Travel | Plots | Property / sites | Accommodation |",
             "|------|--------|-------|------------------|---------------|",
         ]
-        con = None
-        if CAMPAIGNS.exists() and TERN_PLOTS.exists():
-            con = sqlite3.connect(CAMPAIGNS)
-            con.execute(f"ATTACH DATABASE '{TERN_PLOTS.as_posix()}' AS tp")
-
         for day in result.daily_rows:
             plots = ", ".join(day.plots) if day.plots else "—"
             prop = day.property_visited.strip() or "—"
@@ -305,8 +298,6 @@ def render_feedback(
             md.append(
                 f"| {day.visit_date} | {day.travel or '—'} | {plots} | {prop} | {accom} |"
             )
-        if con:
-            con.close()
         md.append("")
 
         md += [
@@ -346,11 +337,11 @@ def feedback_from_csv(
     kanban_path: Path | None = None,
 ) -> tuple[ImportResult, Path]:
     """Parse CSV, reconcile, and write feedback without applying import."""
+    from dronescape_planning.db import open_planning_db
     from dronescape_planning.import_itinerary import parse_itinerary_csv, reconcile
 
     daily_rows, site_rows = parse_itinerary_csv(csv_path)
-    con = sqlite3.connect(CAMPAIGNS)
-    con.execute(f"ATTACH DATABASE '{TERN_PLOTS.as_posix()}' AS tp")
+    con = open_planning_db(attach_ard=False)
     resolved = resolve_trip_id(con, trip_id)
     if not resolved:
         con.close()

@@ -24,8 +24,6 @@ classifiers = [
     "Topic :: Scientific/Engineering :: GIS",
 ]
 
-# Core package has no third-party deps — existing shortlist / trip_audit / seed_campaigns
-# scripts are stdlib-only. Heavier dependencies are opt-in via extras.
 dependencies = []
 
 [project.optional-dependencies]
@@ -33,7 +31,6 @@ maps = [
     "geopandas>=0.14",
     "matplotlib>=3.8",
     "contextily>=1.6",
-    "folium>=0.17",
     "shapely>=2.0",
 ]
 docx = [
@@ -45,13 +42,16 @@ all = [
 ]
 dev = [
     "pytest>=8",
-    "pytest-cov>=5",
     "ruff>=0.4",
-    "mypy>=1.10",
 ]
 
 [project.scripts]
 ds-checklist = "dronescape_planning.generate_checklist:main"
+ds-shortlist = "dronescape_planning.shortlist:main"
+ds-trip-audit = "dronescape_planning.trip_audit:main"
+ds-seed = "dronescape_planning.seed_campaigns:main"
+ds-import-itinerary = "dronescape_planning.import_itinerary:main"
+ds-generate-kml = "dronescape_planning.generate_kml:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -69,8 +69,3 @@ select = ["E", "F", "W", "I", "B", "UP"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-ra"
-
-[tool.mypy]
-python_version = "3.12"
-ignore_missing_imports = true
-warn_unused_ignores = true

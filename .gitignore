@@ -16,6 +16,12 @@ docs/checklists/*.docx
 docs/checklists/maps/
 !docs/checklists/.gitkeep
 
+# Access PDFs (local credentials + filled forms — never commit)
+docs/access/credentials/*
+!docs/access/credentials/.gitkeep
+docs/access/submissions/*
+!docs/access/submissions/.gitkeep
+
 # Python
 __pycache__/
 *.pyc

@@ -4,7 +4,31 @@ import argparse
 import sqlite3
 import sys
 
-from dronescape_planning.paths import ARD_STATE, CAMPAIGNS, TERN_PLOTS
+from dronescape_planning.paths import CAMPAIGNS, TERN_PLOTS
+
+ITINERARY_DAYS_SCHEMA = """
+CREATE TABLE IF NOT EXISTS itinerary_days (
+    trip_id            TEXT NOT NULL,
+    visit_date         TEXT NOT NULL,
+    day_number         INTEGER,
+    day_name           TEXT,
+    travel             TEXT,
+    sites_visited      TEXT,
+    property_visited   TEXT,
+    notes              TEXT,
+    drive_time         TEXT,
+    survey_time        TEXT,
+    post_survey_time   TEXT,
+    redundancy_time    TEXT,
+    total_time         TEXT,
+    accommodation      TEXT,
+    accom_link         TEXT,
+    booking_status     TEXT,
+    source_csv         TEXT,
+    imported_at        TEXT,
+    PRIMARY KEY (trip_id, visit_date)
+);
+"""
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS properties (
@@ -36,29 +60,7 @@ CREATE TABLE IF NOT EXISTS campaign_plots (
     collected    INTEGER DEFAULT 0,
     PRIMARY KEY (trip_id, plot)
 );
-
-CREATE TABLE IF NOT EXISTS itinerary_days (
-    trip_id            TEXT NOT NULL,
-    visit_date         TEXT NOT NULL,
-    day_number         INTEGER,
-    day_name           TEXT,
-    travel             TEXT,
-    sites_visited      TEXT,
-    property_visited   TEXT,
-    notes              TEXT,
-    drive_time         TEXT,
-    survey_time        TEXT,
-    post_survey_time   TEXT,
-    redundancy_time    TEXT,
-    total_time         TEXT,
-    accommodation      TEXT,
-    accom_link         TEXT,
-    booking_status     TEXT,
-    source_csv         TEXT,
-    imported_at        TEXT,
-    PRIMARY KEY (trip_id, visit_date)
-);
-"""
+""" + ITINERARY_DAYS_SCHEMA
 
 DROP_TABLES = [
     "DROP TABLE IF EXISTS campaign_plots",
@@ -98,10 +100,6 @@ def main():
 
     con = sqlite3.connect(CAMPAIGNS)
     con.execute("PRAGMA journal_mode=WAL")
-    con.execute(f"ATTACH DATABASE '{TERN_PLOTS.as_posix()}' AS tp")
-    ard_attached = ARD_STATE.exists()
-    if ard_attached:
-        con.execute(f"ATTACH DATABASE '{ARD_STATE.as_posix()}' AS ard")
 
     if args.reset:
         for stmt in DROP_TABLES:
@@ -117,17 +115,10 @@ def main():
         prop_n = con.execute("SELECT COUNT(*) FROM properties").fetchone()[0]
         camp_n = con.execute("SELECT COUNT(*) FROM campaigns").fetchone()[0]
         plots_n = con.execute("SELECT COUNT(*) FROM campaign_plots").fetchone()[0]
-        tp_n = con.execute("SELECT COUNT(*) FROM tp.plots").fetchone()[0]
         print(f"campaigns.db ready at {CAMPAIGNS}")
-        print(f"  properties:       {prop_n} rows")
-        print(f"  campaigns:        {camp_n} rows")
-        print(f"  campaign_plots:   {plots_n} rows")
-        print(f"attached tp.plots:       {tp_n} rows")
-        if ard_attached:
-            ard_n = con.execute("SELECT COUNT(*) FROM ard.level0_raw").fetchone()[0]
-            print(f"attached ard.level0_raw: {ard_n} rows")
-        else:
-            print(f"ard_state.db not found at {ARD_STATE}")
+        print(f"  properties:     {prop_n} rows")
+        print(f"  campaigns:      {camp_n} rows")
+        print(f"  campaign_plots: {plots_n} rows")
 
     con.close()
 

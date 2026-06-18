@@ -6,12 +6,13 @@ kanban-plugin: board
 
 ## Properties
 
-- [ ] _**Trip:** ADL-BRI-2026-06 · **Route:** Adelaide → Brisbane · **Field dates:** 23 Jun – 3 Jul 2026 · **Sites:** 23 plots across 11 properties (active) · 9 plots across 4 properties (backup)_
+- [ ] _**Trip:** 01-ADL-BRI-2026-06 · **Route:** Adelaide → Brisbane · **Field dates:** 23 Jun – 3 Jul 2026 · **Sites:** 21 plots across 10 properties (active) · 2 plots deferred → 02-BRI-BRK · 9 plots backup_
 - [ ] _Per property, one card: **Organisation / owner** (TERN `plots.property` spelling) · **Tenure** · **Plot IDs** · **Channel** · Move through workflow columns as access progresses. Cards tagged **BACKUP** are alternates only if primary sites fail._
 - [ ] **Mallee Cliffs National Park** · Plots: 4 · Plot IDs: NSAMDD0001, NSAMDD0002, NSAMDD0003, NSAMDD0004 · Status: BACKUP · Date: [BACKUP] · Email: npws.lowerdarling@environment.nsw.gov.au · Phone: — · Manager: —
 - [ ] **Mungo National Park** · Plots: 2 · Plot IDs: NSAMDD0005, NSAMDD0006 · Status: BACKUP · Date: [BACKUP] · Email: npws.lowerdarling@environment.nsw.gov.au · Phone: — · Manager: —
 - [ ] **Mount Kaputar National Park** · Plots: 2 · Plot IDs: NSANAN0001, NSANAN0002 · Status: BACKUP · Date: [BACKUP] · Email: npws.barwon@environment.nsw.gov.au · Phone: — · Manager: —
 - [ ] **Myall Park Private Reserve** · Plots: 1 · Plot IDs: QDABBS0009 · Status: BACKUP · Notes: kanban formerly "Myall Park Nature Refuge" · Date: [BACKUP] · Channel: phone call · Landholder: Lindsay Evans (private) · Phone: —
+- [ ] **Warrumbungle National Park** · Plots: 2 · Plot IDs: NSABBS0001, NSABBS0002 · Status: DEFERRED → 02-BRI-BRK-2026-07 · Date: Day 5 · 24 Jul 2026 · Email: warrumbungle.np@environment.nsw.gov.au · DCCEEW: cassius.growns@dcceew.nsw.gov.au · Access: confirmed · Notes: permit approved too late for ADL-BRI daily schedule — carryover on BRI-BRK kanban
 
 
 ## To Contact
@@ -33,7 +34,6 @@ kanban-plugin: board
 ## Access Confirmed
 
 - [x] _Card moves here once approval is received. Update with: Ranger name · Phone · Gate/access notes · Any site conditions._
-- [X] **Warrumbungle National Park** · Plots: 2 · Plot IDs: NSABBS0001, NSABBS0002 · Date: Day 5 · 24 Jul 2026 (02-BRI-BRK) · Email: warrumbungle.np@environment.nsw.gov.au · DCCEEW: cassius.growns@dcceew.nsw.gov.au · Access: confirmed · Notes: **Deferred → 02-BRI-BRK-2026-07** · approved too late for ADL-BRI daily rows · carryover card on BRI-BRK kanban
 - [X] **Langtree Nature Reserve** · Plots: 1 · Plot IDs: NSAMDD0017 · Date: [DATE] · Email: npws.riverina@environment.nsw.gov.au (Riverina group) · Phone: — · Manager: —
 - [X] **Loughnan Nature Reserve** · Plots: 1 · Plot IDs: NSAMDD0018 · Date: [DATE] · Email: npws.riverina@environment.nsw.gov.au (Riverina group) · Phone: — · Manager: —
 - [X] **Glen Orten Station** · Plots: 1 · Plot IDs: NSABBS0012 · Notes: kanban formerly "Glen Orton Station" · Date: 30 Jun · Channel: website contact form · Landholder: Judi Earl (private) · Phone: — · Manager: Judi Earl

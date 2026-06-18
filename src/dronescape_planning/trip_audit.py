@@ -16,7 +16,8 @@ import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from dronescape_planning.paths import ARD_STATE, CAMPAIGNS, DOCS_AUDITS, TERN_PLOTS
+from dronescape_planning.db import open_planning_db
+from dronescape_planning.paths import ARD_STATE, CAMPAIGNS, DOCS_AUDITS, REPO_ROOT, TERN_PLOTS
 
 # Kanban title on card -> authoritative TERN property name
 PROPERTY_ALIASES: dict[str, str] = {
@@ -151,6 +152,8 @@ def parse_kanban(path: Path) -> list[KanbanCard]:
         if email_m:
             email = (email_m.group(1) or email_m.group(2) or "").strip()
         is_backup = "[BACKUP]" in body or "Status: BACKUP" in body
+        if "DEFERRED" in body.upper():
+            is_backup = True
         cards.append(
             KanbanCard(
                 kanban_property=prop,
@@ -224,6 +227,7 @@ def write_audit_report(
     kanban_path: Path,
     out_path: Path,
     trip_id: str,
+    header: TripHeader | None = None,
 ) -> None:
     out_path.parent.mkdir(parents=True, exist_ok=True)
     active = [a for a in audits if not a.is_backup]
@@ -267,11 +271,16 @@ def write_audit_report(
             lines.extend(_audit_section(a))
 
     lines += ["", "## Registration SQL (--register applies this)", "", "```sql"]
+    route_origin = header.route_origin if header else ""
+    route_dest = header.route_dest if header else ""
+    start_date = header.start_date if header else ""
+    end_date = header.end_date if header else ""
     lines.append(
         "INSERT INTO campaigns (trip_id, route_origin, route_dest, start_date, end_date, season, enso_phase)"
     )
     lines.append(
-        "VALUES ('ADL-BRI-2026-06', 'Adelaide', 'Brisbane', '2026-06-23', '2026-07-03', 'winter', 'nino');"
+        f"VALUES ({repr(trip_id)}, {repr(route_origin)}, {repr(route_dest)}, "
+        f"{repr(start_date)}, {repr(end_date)}, 'winter', NULL);"
     )
     lines.append("")
     for a in active:
@@ -288,7 +297,7 @@ def write_audit_report(
         for plot in a.plot_ids:
             lines.append(
                 f"INSERT OR IGNORE INTO campaign_plots (trip_id, plot) "
-                f"VALUES ('ADL-BRI-2026-06', '{plot}');"
+                f"VALUES ({repr(trip_id)}, '{plot}');"
             )
     lines.append("```")
 
@@ -364,9 +373,11 @@ def register_trip(
             """,
             (a.tern_property, a.email, status),
         )
+    con.execute("DELETE FROM campaign_plots WHERE trip_id = ?", (trip_id,))
+    for a in active:
         for plot in a.plot_ids:
             con.execute(
-                "INSERT OR IGNORE INTO campaign_plots (trip_id, plot) VALUES (?, ?)",
+                "INSERT INTO campaign_plots (trip_id, plot) VALUES (?, ?)",
                 (trip_id, plot),
             )
     con.commit()
@@ -408,8 +419,6 @@ def main():
     args = parse_args()
     kanban_path = Path(args.trip_kanban)
     if not kanban_path.is_absolute():
-        from dronescape_planning.paths import REPO_ROOT
-
         kanban_path = REPO_ROOT / kanban_path
 
     if not kanban_path.exists():
@@ -434,16 +443,13 @@ def main():
         sys.exit(1)
 
     cards = parse_kanban(kanban_path)
-    con = sqlite3.connect(CAMPAIGNS)
-    con.execute(f"ATTACH DATABASE '{TERN_PLOTS.as_posix()}' AS tp")
+    con = open_planning_db(attach_ard=True)
     ard_attached = ARD_STATE.exists()
-    if ard_attached:
-        con.execute(f"ATTACH DATABASE '{ARD_STATE.as_posix()}' AS ard")
 
     audits = audit_cards(cards, con, ard_attached)
     con.close()
 
-    write_audit_report(audits, kanban_path, out_path, trip_id)
+    write_audit_report(audits, kanban_path, out_path, trip_id, header)
 
     if args.register:
         register_trip(audits, trip_id, header)

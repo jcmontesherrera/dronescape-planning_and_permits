@@ -60,8 +60,27 @@ pip install -e ".[all]"
 python scripts/seed_campaigns.py
 ```
 
-Core scripts (`shortlist.py`, `trip_audit.py`, `seed_campaigns.py`) are stdlib-only and
-work without installing anything.
+Core scripts work via `scripts/` launchers or installed CLI commands (`ds-shortlist`, `ds-trip-audit`, `ds-seed`, `ds-import-itinerary`, `ds-checklist`, `ds-generate-kml`).
+Stdlib-only unless you install `[maps]` or `[docx]` extras.
+
+### KMZ maps (`ds-generate-kml`)
+
+Outputs land in `docs/itineraries/maps/`. Open `.kmz` in Google Earth.
+
+```powershell
+# Upcoming trip route (from logistics CSV)
+ds-generate-kml --trip-id 02-BRI-BRK-2026-07 `
+    --csv docs/itineraries/02-BRI-BRK-2026-07-itinerary.csv
+
+# Planning iteration — keep versions side by side
+ds-generate-kml --trip-id 02-BRI-BRK-2026-07 `
+    --csv docs/itineraries/02-BRI-BRK-2026-07-itinerary-v1-coworker.csv --label v1-coworker
+
+# National collected footprint (boss map; regenerate after ard scan)
+ds-generate-kml --collected
+```
+
+Trip KMZ = daily route for planning and upcoming-trip previews. Collected KMZ = every plot in `ard.level0_raw`. Checklist `--maps` PNGs are separate (email attachments).
 
 ---
 
@@ -79,9 +98,9 @@ docs/
   campaign-roadmap.md           ← 2026–2028 corridor chain
   itineraries/                  ← CSV exports from shared Excel
   checklists/                   ← generated output (gitignored)
+  access/                       ← credential PDFs + filled forms (gitignored contents)
   drafts/                       ← shortlist briefs (gitignored)
   audits/                       ← trip_audit + feedback reports (gitignored)
-  archive/                      ← ADRs + superseded docs
 scripts/                        ← CLI launchers
 src/dronescape_planning/        ← Python modules
 templates/                      ← email skeleton
